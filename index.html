@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/vue.global.js"></script>
+    <link href="/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/fontawesome/fontawesome.min.css" />
+    <link rel="stylesheet" href="/css/fontawesome/brands.min.css" />
+    <link rel="stylesheet" href="/css/fontawesome/solid.min.css" />
+    <link rel="icon" type="image/png" href="/img/icon.png" />
+    <title>時間處理</title>
+    <style></style>
+  </head>
+  <body>
+    <div id="app" class="container">
+      <h1 class="text-center">時間處理</h1>
+      <div class="row">
+        <!-- 測試項目01 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">「ROC時間格式」轉「時間數值」</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">年</span>
+            <input type="text" class="form-control" v-model="test01.year" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">月</span>
+            <input type="text" class="form-control" v-model="test01.month" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">日</span>
+            <input type="text" class="form-control" v-model="test01.day" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">時</span>
+            <input type="text" class="form-control" v-model="test01.hour" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">分</span>
+            <input type="text" class="form-control" v-model="test01.minute" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">秒</span>
+            <input type="text" class="form-control" v-model="test01.second" />
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" @click="done01">執行</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold text-success">{{test01.result}}</p>
+        </div>
+        <hr />
+        <!-- 測試項目02 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">「時間數值」轉「ROC時間特定格式」</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">時間數值</span>
+            <input type="text" class="form-control" v-model="test02.timeValue" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">格式</span>
+            <select class="form-select form-select-lg" id="yearSelect" v-model="test02.format">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" @click="done02">執行</button>
+        </div>
+        <div class="col-7">
+          <p>格式1：YYY年MM月DD日 星期w hh時mm分ss秒</p>
+          <p>格式2：YYY年MM月DD日 hh時mm分ss秒</p>
+          <p>格式3：YYY/MM/DD hh:mm:ss</p>
+          <p class="h4 fw-bold text-success">{{test02.result}}</p>
+        </div>
+        <hr />
+        <!-- 測試項目03 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">「當下時間Time Snapshot」轉「時間數值」</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">系統自動抓時間</span>
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" @click="done03">執行</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold text-success">{{test03.result}}</p>
+        </div>
+        <hr />
+        <!-- 測試項目04 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">「當下時間Time Snapshot」轉「ROC時間格式」</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">系統自動抓時間</span>
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" @click="done04">執行</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold text-success">{{test04.result}}</p>
+        </div>
+        <hr />
+        <!-- 測試項目05 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">當下時間顯示</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">系統自動抓時間</span>
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" v-if="!test05.start" @click="done05(0)">執行</button>
+          <button type="button" class="btn btn-danger" v-else @click="done05(1)">停止</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold text-success">{{test05.result}}</p>
+        </div>
+        <hr />
+        <!-- 測試項目06 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">正向計時</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">從零開始</span>
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" v-if="!test06.start" @click="done06(0)">開始</button>
+          <button type="button" class="btn btn-warning" v-if="test06.start" @click="done06(1)">暫停</button>
+          <button type="button" class="btn btn-danger" v-if="!test06.start" @click="done06(2)">重設</button>
+          <button type="button" class="btn btn-info" v-if="test06.start" @click="done06(3)">分圈計時</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold text-success">{{test06.result}}</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">間段</th>
+                <th scope="col">間段時間</th>
+                <th scope="col">總時間</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item,index) in test06.record">
+                <th scope="row">{{index +1}}</th>
+                <td>{{item.lapTime}}</td>
+                <td>{{item.totalTimeSnap}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <hr />
+        <!-- 測試項目07 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">倒數計時</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">時</span>
+            <input type="text" class="form-control" v-model="test07.input.hours" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">分</span>
+            <input type="text" class="form-control" v-model="test07.input.minutes" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">秒</span>
+            <input type="text" class="form-control" v-model="test07.input.seconds" />
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" v-if="!test07.start && test07.stop" @click="done07(0)">開始</button>
+          <button type="button" class="btn btn-info" v-if="test07.start && test07.stop" @click="done07(1)">繼續</button>
+          <button type="button" class="btn btn-warning" v-if="test07.start && !test07.stop" @click="done07(2)">暫停</button>
+          <button type="button" class="btn btn-danger" @click="done07(3)">重設</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold">剩餘時間：<span class="text-success">{{test07.result.countTime}}</span></p>
+          <p class="h4 fw-bold">計時完當下時間：<span class="text-success">{{test07.result.targetTime}}</span></p>
+        </div>
+        <hr />
+        <!-- 測試項目08 -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">倒數日</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">年</span>
+            <input type="text" class="form-control" v-model="test08.input.years" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">月</span>
+            <input type="text" class="form-control" v-model="test08.input.months" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">日</span>
+            <input type="text" class="form-control" v-model="test08.input.days" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">時</span>
+            <input type="text" class="form-control" v-model="test08.input.hours" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">分</span>
+            <input type="text" class="form-control" v-model="test08.input.minutes" />
+          </div>
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">秒</span>
+            <input type="text" class="form-control" v-model="test08.input.seconds" />
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" v-if="!test08.start" @click="done08(0)">執行</button>
+          <button type="button" class="btn btn-danger" v-else @click="done08(1)">停止</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold">剩餘時間：<span class="text-success">{{test08.result}}</span></p>
+        </div>
+        <hr />
+        <!-- 測試項目0X -->
+        <div class="col-12">
+          <p class="h3 fw-bold mt-3">測試項目0X</p>
+        </div>
+        <div class="col-3">
+          <div class="input-group mb-3">
+            <span class="input-group-text" id="basic-addon1">輸入</span>
+            <input type="text" class="form-control" v-model="test0X.input" />
+          </div>
+        </div>
+        <div class="col-2">
+          <button type="button" class="btn btn-primary" @click="done0X">執行</button>
+        </div>
+        <div class="col-7">
+          <p class="h4 fw-bold text-success">{{test0X.result}}</p>
+        </div>
+        <hr />
+        <!-- End -->
+      </div>
+    </div>
+  </body>
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          test01: {
+            year: 113,
+            month: 10,
+            day: 27,
+            hour: 10,
+            minute: 32,
+            second: 54,
+            result: "結果",
+          },
+          test02: {
+            timeValue: "1729996374000",
+            format: "1",
+            result: "結果",
+          },
+          test03: {
+            result: "結果",
+          },
+          test04: {
+            result: "結果",
+          },
+          test05: {
+            timer: null,
+            start: false,
+            result: "YYY年MM月DD日 星期w hh時mm分ss秒",
+          },
+          test06: {
+            timer: null,
+            start: false,
+            totalTime: 0,
+            lapTime: 0,
+            record: [
+              {
+                lapTime: "00:00:00",
+                totalTimeSnap: "00:00:00",
+              },
+            ],
+            result: "00:00:00",
+          },
+          test07: {
+            timer: null,
+            start: false,
+            stop: true,
+            input: {
+              hours: "1",
+              minutes: "20",
+              seconds: "15",
+            },
+            totalTime: 0,
+            nowTime: 0,
+            futureTime: 0,
+            result: {
+              countTime: "00時00分00秒",
+              targetTime: "00時00分00秒",
+            },
+          },
+          test08: {
+            timer: null,
+            start: false,
+            input: {
+              years: 130,
+              months: 10,
+              days: 30,
+              hours: 10,
+              minutes: 30,
+              seconds: 52,
+            },
+            result: "DD日hh時mm分ss秒",
+          },
+          test0X: {
+            input: "",
+            result: "結果0X",
+          },
+        };
+      },
+      created() {},
+      methods: {
+        done01: function () {
+          function ROCFormat_TimeValue(YYY, MM, DD, hh, mm, ss) {
+            const year = parseInt(YYY);
+            const month = parseInt(MM);
+            const day = parseInt(DD);
+            const hour = parseInt(hh);
+            const minute = parseInt(mm);
+            const second = parseInt(ss);
+            return new Date(1911 + year, month - 1, day, hour, minute, second).getTime();
+          }
+          this.test01.result = ROCFormat_TimeValue(
+            this.test01.year,
+            this.test01.month,
+            this.test01.day,
+            this.test01.hour,
+            this.test01.minute,
+            this.test01.second
+          );
+        },
+        done02: function () {
+          function TimeValue_ROCformat(timeValue) {
+            const value = parseInt(timeValue);
+            function lessZero(val) {
+              return val < 10 ? "0" + val : val;
+            }
+            const Time = new Date(value);
+            const year = Time.getFullYear() - 1911;
+            const month = lessZero(Time.getMonth() + 1);
+            const day = lessZero(Time.getDate());
+            let weekString = "星期○";
+            switch (Time.getDay()) {
+              case 0:
+                weekString = "星期日";
+                break;
+              case 1:
+                weekString = "星期一";
+                break;
+              case 2:
+                weekString = "星期二";
+                break;
+              case 3:
+                weekString = "星期三";
+                break;
+              case 4:
+                weekString = "星期四";
+                break;
+              case 5:
+                weekString = "星期五";
+                break;
+              case 6:
+                weekString = "星期六";
+                break;
+              default:
+                weekString = "星期○";
+            }
+            const week = weekString;
+            const hour = lessZero(Time.getHours());
+            const minute = lessZero(Time.getMinutes());
+            const second = lessZero(Time.getSeconds());
+            const ROCformat = {
+              year,
+              month,
+              day,
+              week,
+              hour,
+              minute,
+              second,
+            };
+            return ROCformat;
+          }
+          const ROCformat = TimeValue_ROCformat(this.test02.timeValue);
+          if (this.test02.format == "1") {
+            this.test02.result =
+              ROCformat.year +
+              "年" +
+              ROCformat.month +
+              "月" +
+              ROCformat.day +
+              "日 " +
+              ROCformat.week +
+              " " +
+              ROCformat.hour +
+              "時" +
+              ROCformat.minute +
+              "分" +
+              ROCformat.second +
+              "秒";
+          }
+          if (this.test02.format == "2") {
+            this.test02.result =
+              ROCformat.year +
+              "年" +
+              ROCformat.month +
+              "月" +
+              ROCformat.day +
+              "日 " +
+              ROCformat.hour +
+              "時" +
+              ROCformat.minute +
+              "分" +
+              ROCformat.second +
+              "秒";
+          }
+          if (this.test02.format == "3") {
+            this.test02.result =
+              ROCformat.year + "/" + ROCformat.month + "/" + ROCformat.day + " " + ROCformat.hour + ":" + ROCformat.minute + ":" + ROCformat.second;
+          }
+        },
+        done03: function () {
+          const now = new Date();
+          this.test03.result = now.getTime();
+        },
+        done04: function () {
+          function TimeValue_ROCformat(timeValue) {
+            const value = parseInt(timeValue);
+            function lessZero(val) {
+              return val < 10 ? "0" + val : val;
+            }
+            const Time = new Date(value);
+            const year = Time.getFullYear() - 1911;
+            const month = lessZero(Time.getMonth() + 1);
+            const day = lessZero(Time.getDate());
+            let weekString = "星期○";
+            switch (Time.getDay()) {
+              case 0:
+                weekString = "星期日";
+                break;
+              case 1:
+                weekString = "星期一";
+                break;
+              case 2:
+                weekString = "星期二";
+                break;
+              case 3:
+                weekString = "星期三";
+                break;
+              case 4:
+                weekString = "星期四";
+                break;
+              case 5:
+                weekString = "星期五";
+                break;
+              case 6:
+                weekString = "星期六";
+                break;
+              default:
+                weekString = "星期○";
+            }
+            const week = weekString;
+            const hour = lessZero(Time.getHours());
+            const minute = lessZero(Time.getMinutes());
+            const second = lessZero(Time.getSeconds());
+            const ROCformat = {
+              year,
+              month,
+              day,
+              week,
+              hour,
+              minute,
+              second,
+            };
+            return ROCformat;
+          }
+          const now = new Date().getTime();
+          const ROCformat = TimeValue_ROCformat(now);
+          this.test04.result =
+            ROCformat.year +
+            "年" +
+            ROCformat.month +
+            "月" +
+            ROCformat.day +
+            "日 " +
+            ROCformat.week +
+            " " +
+            ROCformat.hour +
+            "時" +
+            ROCformat.minute +
+            "分" +
+            ROCformat.second +
+            "秒";
+        },
+        done05: function (step) {
+          function TimeValue_ROCformat(timeValue) {
+            const value = parseInt(timeValue);
+            function lessZero(val) {
+              return val < 10 ? "0" + val : val;
+            }
+            const Time = new Date(value);
+            const year = Time.getFullYear() - 1911;
+            const month = lessZero(Time.getMonth() + 1);
+            const day = lessZero(Time.getDate());
+            let weekString = "星期○";
+            switch (Time.getDay()) {
+              case 0:
+                weekString = "星期日";
+                break;
+              case 1:
+                weekString = "星期一";
+                break;
+              case 2:
+                weekString = "星期二";
+                break;
+              case 3:
+                weekString = "星期三";
+                break;
+              case 4:
+                weekString = "星期四";
+                break;
+              case 5:
+                weekString = "星期五";
+                break;
+              case 6:
+                weekString = "星期六";
+                break;
+              default:
+                weekString = "星期○";
+            }
+            const week = weekString;
+            const hour = lessZero(Time.getHours());
+            const minute = lessZero(Time.getMinutes());
+            const second = lessZero(Time.getSeconds());
+            const ROCformat = {
+              year,
+              month,
+              day,
+              week,
+              hour,
+              minute,
+              second,
+            };
+            return ROCformat;
+          }
+          if (step === 0) {
+            this.test05.timer = setInterval(() => {
+              const now = new Date().getTime();
+              const ROCformat = TimeValue_ROCformat(now);
+              this.test05.result =
+                ROCformat.year +
+                "年" +
+                ROCformat.month +
+                "月" +
+                ROCformat.day +
+                "日 " +
+                ROCformat.week +
+                " " +
+                ROCformat.hour +
+                "時" +
+                ROCformat.minute +
+                "分" +
+                ROCformat.second +
+                "秒";
+            }, 500);
+            this.test05.start = true;
+          }
+          if (step === 1) {
+            clearInterval(this.test05.timer);
+            this.test05.start = false;
+            console.log("stop test05 Timer!");
+          }
+        },
+        done06: function (step) {
+          // 小於0補零
+          function lessZero(val) {
+            return val < 10 ? "0" + val : val;
+          }
+          // 設置00:00:00之時間格式
+          function formatTime(value) {
+            let msec = lessZero(value % 100);
+            let sec = lessZero(parseInt(value / 100) % 60);
+            let min = lessZero(parseInt(value / 100 / 60) % 60);
+            return min + ":" + sec + ":" + msec;
+          }
+          // 主程式
+          if (step == 0) {
+            console.log("Start test06 Timer!");
+            this.test06.start = true;
+            this.test06.timer = setInterval(() => {
+              this.test06.totalTime += 1;
+              this.test06.lapTime += 1;
+              this.test06.result = formatTime(this.test06.totalTime);
+              this.test06.record[this.test06.record.length - 1].lapTime = formatTime(this.test06.lapTime);
+              this.test06.record[this.test06.record.length - 1].totalTimeSnap = formatTime(this.test06.totalTime);
+            }, 10);
+          }
+          if (step == 1) {
+            console.log("Pause test06 Timer!");
+            this.test06.start = false;
+            clearInterval(this.test06.timer);
+          }
+          if (step == 2) {
+            console.log("Reset test06 Timer!");
+            clearInterval(this.test06.timer);
+            this.test06.totalTime = 0;
+            this.test06.lapTime = 0;
+            this.test06.result = "00:00:00";
+            this.test06.record = [
+              {
+                lapTime: "00:00:00",
+                totalTimeSnap: "00:00:00",
+              },
+            ];
+          }
+          if (step == 3) {
+            console.log("Record test06 Timer!");
+            let record = {
+              lapTime: formatTime(this.test06.lapTime),
+              totalTimeSnap: formatTime(this.test06.totalTime),
+            };
+            this.test06.record.push(record);
+            // 清空lapTime
+            this.test06.lapTime = 0;
+          }
+        },
+        done07: function (step) {
+          // 小於0補零
+          function lessZero(val) {
+            return val < 10 ? "0" + val : val;
+          }
+          function TimeValue_ROCformat(timeValue) {
+            const value = parseInt(timeValue);
+            const Time = new Date(value);
+            const year = Time.getFullYear() - 1911;
+            const month = lessZero(Time.getMonth() + 1);
+            const day = lessZero(Time.getDate());
+            let weekString = "星期○";
+            switch (Time.getDay()) {
+              case 0:
+                weekString = "星期日";
+                break;
+              case 1:
+                weekString = "星期一";
+                break;
+              case 2:
+                weekString = "星期二";
+                break;
+              case 3:
+                weekString = "星期三";
+                break;
+              case 4:
+                weekString = "星期四";
+                break;
+              case 5:
+                weekString = "星期五";
+                break;
+              case 6:
+                weekString = "星期六";
+                break;
+              default:
+                weekString = "星期○";
+            }
+            const week = weekString;
+            const hour = lessZero(Time.getHours());
+            const minute = lessZero(Time.getMinutes());
+            const second = lessZero(Time.getSeconds());
+            const ROCformat = {
+              year,
+              month,
+              day,
+              week,
+              hour,
+              minute,
+              second,
+            };
+            return ROCformat;
+          }
+          // 設置00:00:00之時間格式
+          function formatTime(value) {
+            let sec = lessZero(value % 60);
+            let min = lessZero(parseInt(value / 60) % 60);
+            let hour = lessZero(parseInt(value / 60 / 60) % 60);
+            return hour + "時" + min + "分" + sec + "秒";
+          }
+          function reset() {}
+          // 主程式
+          if (step == 0) {
+            console.log("Start test07 Timer!");
+            this.test07.start = true;
+            this.test07.stop = false;
+            // 將輸入時間數值化
+            this.test07.totalTime =
+              parseInt(this.test07.input.hours) * 60 * 60 + parseInt(this.test07.input.minutes) * 60 + parseInt(this.test07.input.seconds);
+            // 創建現在時間與預估未來時間
+            this.test07.nowTime = new Date().getTime();
+            this.test07.futureTime = this.test07.nowTime + this.test07.totalTime * 1000;
+            const str = TimeValue_ROCformat(this.test07.futureTime);
+            this.test07.result.countTime = formatTime(this.test07.totalTime);
+            this.test07.result.targetTime = str.hour + "時" + str.minute + "分" + str.second + "秒";
+            // 執行倒數
+            this.test07.timer = setInterval(() => {
+              if (this.test07.totalTime < 0) {
+                clearInterval(this.test07.timer);
+                this.test07.start = false;
+                this.test07.stop = true;
+                this.test07.totalTime = 0;
+                this.test07.nowTime = 0;
+                this.test07.futureTime = 0;
+                this.test07.result.countTime = formatTime(0);
+                this.test07.result.targetTime = formatTime(0);
+              } else {
+                this.test07.totalTime -= 1;
+                this.test07.result.countTime = formatTime(this.test07.totalTime);
+              }
+            }, 1000);
+          }
+          if (step == 1) {
+            console.log("Keep Going test07 Timer!");
+            this.test07.start = true;
+            this.test07.stop = false;
+            // 創建現在時間與預估未來時間
+            this.test07.nowTime = new Date().getTime();
+            this.test07.futureTime = this.test07.nowTime + this.test07.totalTime * 1000;
+            const str = TimeValue_ROCformat(this.test07.futureTime);
+            this.test07.result.countTime = formatTime(this.test07.totalTime);
+            this.test07.result.targetTime = str.hour + "時" + str.minute + "分" + str.second + "秒";
+            // 執行倒數
+            this.test07.timer = setInterval(() => {
+              if (this.test07.totalTime < 0) {
+                clearInterval(this.test07.timer);
+                this.test07.start = false;
+                this.test07.stop = true;
+                this.test07.totalTime = 0;
+                this.test07.nowTime = 0;
+                this.test07.futureTime = 0;
+                this.test07.result.countTime = formatTime(0);
+                this.test07.result.targetTime = formatTime(0);
+              } else {
+                this.test07.totalTime -= 1;
+                this.test07.result.countTime = formatTime(this.test07.totalTime);
+              }
+            }, 1000);
+          }
+          if (step == 2) {
+            console.log("Pause test07 Timer!");
+            this.test07.start = true;
+            this.test07.stop = true;
+            clearInterval(this.test07.timer);
+          }
+          if (step == 3) {
+            console.log("Reset test07 Timer!");
+            clearInterval(this.test07.timer);
+            this.test07.start = false;
+            this.test07.stop = true;
+            this.test07.totalTime = 0;
+            this.test07.nowTime = 0;
+            this.test07.futureTime = 0;
+            this.test07.result.countTime = formatTime(0);
+            this.test07.result.targetTime = formatTime(0);
+          }
+        },
+        done08: function (step) {
+          function ROCFormat_TimeValue(YYY, MM, DD, hh, mm, ss) {
+            const year = parseInt(YYY);
+            const month = parseInt(MM);
+            const day = parseInt(DD);
+            const hour = parseInt(hh);
+            const minute = parseInt(mm);
+            const second = parseInt(ss);
+            return new Date(1911 + year, month - 1, day, hour, minute, second).getTime();
+          }
+          const timeValue = ROCFormat_TimeValue(
+            this.test08.input.years,
+            this.test08.input.months,
+            this.test08.input.days,
+            this.test08.input.hours,
+            this.test08.input.minutes,
+            this.test08.input.seconds
+          );
+          const countDown = new Date(timeValue);
+          // 不可以設置過去的時間
+          let des = countDown - new Date();
+          if (des < 0) {
+            this.test08.result = "不可以設置過去的時間";
+          } else {
+            if (step === 0) {
+              console.log("開始!");
+              this.test08.timer = setInterval(() => {
+                des = countDown - new Date();
+                let days = Math.floor(des / (24 * 60 * 60 * 1000));
+                let hours = Math.floor((des % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                let minutes = Math.floor((des % (60 * 60 * 1000)) / (60 * 1000));
+                let seconds = Math.floor((des % (60 * 1000)) / 1000);
+                days = days < 10 ? "0" + days : days;
+                hours = hours < 10 ? "0" + hours : hours;
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                this.test08.result = days + "日 " + hours + "時" + minutes + "分" + seconds + "秒";
+              }, 500);
+              this.test08.start = true;
+            }
+            if (step === 1) {
+              clearInterval(this.test08.timer);
+              console.log("stop test08 Timer!");
+              this.test08.start = false;
+            }
+          }
+        },
+        done0X: function () {
+          if (this.test0X.input.trim() == "") {
+            this.test0X.result = "不可輸入空值";
+          } else {
+            this.test0X.result = this.test0X.input;
+          }
+          console.log(this.test0X.result);
+        },
+      },
+      mounted() {},
+      computed: {},
+      watch: {},
+    }).mount("#app");
+  </script>
+</html>
